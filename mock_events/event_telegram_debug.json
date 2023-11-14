@@ -1,6 +1,0 @@
-{
-  "headers": {
-    "Authorization": "xxxxx"
-  },
-  "body": "{\"update_id\": 262661495,\"message\": {\"message_id\": 215,\"from\": {\"id\": 1346557085,\"is_bot\": false,\"first_name\": \"Julio\",\"last_name\": \"Marin\",\"username\": \"jotacemarin\",\"language_code\": \"en\"},\"chat\": {\"id\": 1346557085,\"first_name\": \"Julio\",\"last_name\": \"Marin\",\"username\": \"jotacemarin\",\"type\": \"private\"},\"date\": 1699836093,\"photo\": [{\"file_id\": \"AgACAgEAAxkBAAPXZVFwvV4DVSWnYLaKIzYtfCKhgVwAAqqtMRs52YhG_BaIE7yoYygBAAMCAANzAAMzBA\",\"file_unique_id\": \"AQADqq0xGznZiEZ4\",\"file_size\": 1383,\"width\": 90,\"height\": 51},{\"file_id\": \"AgACAgEAAxkBAAPXZVFwvV4DVSWnYLaKIzYtfCKhgVwAAqqtMRs52YhG_BaIE7yoYygBAAMCAANtAAMzBA\",\"file_unique_id\": \"AQADqq0xGznZiEZy\",\"file_size\": 18493,\"width\": 320,\"height\": 180},{\"file_id\": \"AgACAgEAAxkBAAPXZVFwvV4DVSWnYLaKIzYtfCKhgVwAAqqtMRs52YhG_BaIE7yoYygBAAMCAAN4AAMzBA\",\"file_unique_id\": \"AQADqq0xGznZiEZ9\",\"file_size\": 75474,\"width\": 800,\"height\": 450},{\"file_id\": \"AgACAgEAAxkBAAPXZVFwvV4DVSWnYLaKIzYtfCKhgVwAAqqtMRs52YhG_BaIE7yoYygBAAMCAAN5AAMzBA\",\"file_unique_id\": \"AQADqq0xGznZiEZ-\",\"file_size\": 130511,\"width\": 1280,\"height\": 720}],\"caption\": \"/debug\",\"caption_entities\": [{\"offset\": 0,\"length\": 6,\"type\": \"bot_command\"}]}}"
-}

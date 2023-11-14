@@ -1,32 +1,30 @@
 {
-  "name": "botnorrea-v2-telegram",
+  "name": "botnorrea-v2-crews",
   "version": "1.0.0",
-  "description": "Botnorrea v2 core",
+  "description": "Botnorrea v2 core: crews functions",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
     "dev:deploy": "sls deploy --stage dev --verbose",
     "dev:destroy": "sls remove --stage dev --verbose",
-    "local:telegramSetWebhook": "sls invoke local -f telegramSetWebhook -p mock_events/event_telegram_set_webhook.json --stage dev",
-    "local:telegramWebhook": "sls invoke local -f telegramWebhook -p mock_events/event_telegram_webhook.json --stage dev",
-    "local:telegramSendMessage": "sls invoke local -f telegramSendMessage -p mock_events/event_telegram_send_message.json --stage dev",
-    "local:telegramSendPhoto": "sls invoke local -f telegramSendPhoto -p mock_events/event_telegram_send_photo.json --stage dev",
-    "local:telegramDebug": "sls invoke local -f telegramDebug -p mock_events/event_telegram_debug.json --stage dev"
+    "local:crews": "sls invoke local -f crews -p mock_events/event_crews.json --stage dev",
+    "local:crew": "sls invoke local -f crew -p mock_events/event_crew.json --stage dev",
+    "local:crewsCreate": "sls invoke local -f crewsCreate -p mock_events/event_crews_create.json --stage dev"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jotacemarin/botnorrea-v2-telegram.git"
+    "url": "git+https://github.com/jotacemarin/botnorrea-v2-crews.git"
   },
   "keywords": [
-    "botnorrea-v2-telegram"
+    "botnorrea-v2-crews"
   ],
   "author": "jotacemarin@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jotacemarin/botnorrea-v2-telegram/issues"
+    "url": "https://github.com/jotacemarin/botnorrea-v2-crews/issues"
   },
-  "homepage": "https://github.com/jotacemarin/botnorrea-v2-telegram#readme",
+  "homepage": "https://github.com/jotacemarin/botnorrea-v2-crews#readme",
   "jest": {
     "coveragePathIgnorePatterns": [
       "src/services/telegram"
@@ -41,14 +39,9 @@
     }
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.388.0",
-    "@aws-sdk/lib-dynamodb": "3.388.0",
-    "@xenova/transformers": "^2.8.0",
     "axios": "1.4.0",
     "http-status": "1.6.2",
-    "mongoose": "^8.0.0",
-    "onnxruntime-node": "^1.16.2",
-    "transformers.ts": "^1.0.2"
+    "mongoose": "^8.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "7.22.10",

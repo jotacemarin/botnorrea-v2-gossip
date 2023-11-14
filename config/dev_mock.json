@@ -1,6 +1,6 @@
 {
   "service": {
-    "name": "botnorrea-v2-telegram"
+    "name": "botnorrea-v2-crews"
   },
   "provider": {
     "name": "aws",

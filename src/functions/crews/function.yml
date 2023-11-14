@@ -1,0 +1,11 @@
+name: ${self:custom.secrets.service.name}-${self:custom.secrets.provider.stage}-crews-list
+handler: index.crews
+memorySize: 128
+timeout: 30
+reservedConcurrency: 20
+events: 
+  - http: 
+      path: /${self:custom.secrets.service.name}-${self:custom.secrets.provider.stage}/crews/
+      method: POST
+      cors: true
+      # authorizer: authorizer

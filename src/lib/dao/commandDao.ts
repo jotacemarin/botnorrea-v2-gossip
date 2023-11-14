@@ -63,6 +63,6 @@ export class CommandDao {
       { upsert: true }
     );
 
-    return CommandDao.findByKey(command.key);
+    return CommandDao.findByKey(key);
   }
 }

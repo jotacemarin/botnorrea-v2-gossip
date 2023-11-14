@@ -1,6 +1,0 @@
-{
-  "headers": {
-    "Authorization": "xxxxx"
-  },
-  "body": "{\"chat_id\": 1346557085, \"photo\": \"AgACAgEAAxkBAAPXZVFwvV4DVSWnYLaKIzYtfCKhgVwAAqqtMRs52YhG_BaIE7yoYygBAAMCAAN5AAMzBA\", \"caption\": \"test caption\"}"
-}

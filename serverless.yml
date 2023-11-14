@@ -17,15 +17,13 @@ provider:
     STAGE: ${self:provider.stage}
     REGION: ${self:provider.region}
     BOT_NAME: ${self:custom.secrets.provider.environment.BOT_NAME}-${self:provider.stage}
-    TELEGRAM_BOT_TOKEN: ${self:custom.secrets.provider.environment.TELEGRAM_BOT_TOKEN}
+    TELEGRAM_SEND_MESSAGE_URL: ${self:custom.secrets.provider.environment.TELEGRAM_SEND_MESSAGE_URL}
     MONGO_USER: ${self:custom.secrets.provider.environment.MONGO_USER}
     MONGO_PASSWORD: ${self:custom.secrets.provider.environment.MONGO_PASSWORD}
     MONGO_HOST: ${self:custom.secrets.provider.environment.MONGO_HOST}
     MONGO_DATABASE: ${self:custom.secrets.provider.environment.MONGO_DATABASE}
 
 functions:
-  telegramSetWebhook: ${file(./src/functions/telegram_set_webhook/function.yml)}
-  telegramWebhook: ${file(./src/functions/telegram_webhook/function.yml)}
-  telegramSendMessage: ${file(./src/functions/telegram_send_message/function.yml)}
-  telegramSendPhoto: ${file(./src/functions/telegram_send_photo/function.yml)}
-  telegramDebug: ${file(./src/functions/telegram_debug/function.yml)}
+  crews: ${file(./src/functions/crews/function.yml)}
+  crew: ${file(./src/functions/crew/function.yml)}
+  crewsCreate: ${file(./src/functions/crews_create/function.yml)}

@@ -20,7 +20,7 @@ export interface User {
 export interface Crew {
   _id?: ID | string;
   name: string;
-  members: Array<ID | string>;
+  members: Array<User | string>;
   createdAt?: AtedAt | string;
   updatedAt?: AtedAt | string;
 }
