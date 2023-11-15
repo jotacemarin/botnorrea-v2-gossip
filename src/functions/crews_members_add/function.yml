@@ -1,5 +1,5 @@
 name: ${self:custom.secrets.service.name}-${self:custom.secrets.provider.stage}-crews-members-add
-handler: index.crewsMemberAdd
+handler: index.crewsMembersAdd
 memorySize: 128
 timeout: 30
 reservedConcurrency: 20

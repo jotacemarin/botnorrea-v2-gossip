@@ -27,3 +27,4 @@ functions:
   crews: ${file(./src/functions/crews/function.yml)}
   crew: ${file(./src/functions/crew/function.yml)}
   crewsCreate: ${file(./src/functions/crews_create/function.yml)}
+  crewsMembersAdd: ${file(./src/functions/crews_members_add/function.yml)}

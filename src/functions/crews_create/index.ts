@@ -70,7 +70,7 @@ const buildMessage = async (body: UpdateTg, crew: Crew): Promise<void> => {
 
   await sendMessage(
     body,
-    `Crew <b>${crew?.name}</b> updated, members added:\n\n[ ${usernames} ]`
+    `Crew <b>${crew?.name}</b> has been created, members:\n\n[ ${usernames} ]`
   );
   return;
 };

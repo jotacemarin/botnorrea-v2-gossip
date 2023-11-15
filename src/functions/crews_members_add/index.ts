@@ -1,34 +1,114 @@
 import { APIGatewayEvent, Callback, Context } from "aws-lambda";
-import { OK, BAD_REQUEST } from "http-status";
 import {
-  SendMessageParams,
-  TelegramService,
-} from "../../lib/services/telegram";
+  OK,
+  BAD_REQUEST,
+  NOT_FOUND,
+  NOT_MODIFIED,
+  INTERNAL_SERVER_ERROR,
+} from "http-status";
+import { Crew, FormattingOptionsTg, UpdateTg, User } from "../../lib/models";
+import { getTextCommand } from "../../lib/utils/telegramHelper";
+import { UserDao } from "../../lib/dao/userDao";
+import { CrewDao } from "../../lib/dao/crewDao";
+import { BotnorreaService } from "../../lib/services/botnorrea";
 
-const execute = async (
-  body: SendMessageParams
-): Promise<{ statusCode: number; body?: string }> => {
-  if (!body?.chat_id) {
-    return {
-      statusCode: BAD_REQUEST,
-      body: JSON.stringify({ error: "chat_id is missing" }),
-    };
-  }
-
-  if (!body?.text) {
-    return {
-      statusCode: BAD_REQUEST,
-      body: JSON.stringify({ error: "text is missing" }),
-    };
-  }
-
-  TelegramService.initInstance();
-  const sendMessageResponse = await TelegramService.sendMessage(body);
-
-  return { statusCode: OK, body: JSON.stringify(sendMessageResponse?.data) };
+const sendMessage = async (body: UpdateTg, text: string): Promise<void> => {
+  BotnorreaService.initInstance();
+  await BotnorreaService.sendMessage({
+    chat_id: body?.message?.chat?.id,
+    text,
+    reply_to_message_id: body?.message?.message_id,
+    parse_mode: FormattingOptionsTg.HTML,
+  });
+  return;
 };
 
-export const telegramSendMessage = async (
+const getDataFromBody = (
+  body: UpdateTg
+): { crewName: string; usernames: Array<string> } => {
+  const key = getTextCommand(body) ?? "";
+
+  const [crewName, ...usernames] = body?.message?.text
+    ?.replace(key, "")
+    ?.trim()
+    ?.split(" ");
+
+  return { crewName: crewName?.toLowerCase(), usernames };
+};
+
+const getUsersId = async (usernames: Array<string>): Promise<Array<string>> => {
+  await UserDao.initInstance();
+  const users = await UserDao.findByUsernames(usernames);
+  if (!users || !users?.length) {
+    return [];
+  }
+
+  return users.map((user: User) => user?._id as string);
+};
+
+const getCrew = async (crewName: string) => {
+  await CrewDao.initInstance();
+  return CrewDao.findByName(crewName);
+};
+
+const removeDupleMembers = (
+  crew: Crew,
+  usersInput: Array<string>
+): Array<string> => {
+  const currentUsers = crew?.members
+    ?.map((member) => member as User)
+    ?.map((member) => String(member?._id));
+  const stringIdUsers = [...currentUsers, ...usersInput]
+    ?.filter((user) => Boolean(user))
+    ?.map((rawUser) => String(rawUser));
+  return [...new Set(stringIdUsers)];
+};
+
+const saveCrew = async (
+  crew: Crew,
+  members: Array<string>
+): Promise<Crew | null> => {
+  await CrewDao.initInstance();
+  return CrewDao.save({ ...crew, members });
+};
+
+const execute = async (
+  body: UpdateTg
+): Promise<{ statusCode: number; body?: string }> => {
+  const { crewName, usernames } = getDataFromBody(body);
+
+  const crew = await getCrew(crewName);
+  if (!crew) {
+    await sendMessage(body, `Crew <b>${crewName}</b> not found`);
+    return { statusCode: NOT_FOUND };
+  }
+
+  const usersInput = await getUsersId(usernames);
+  if (!usersInput?.length) {
+    await sendMessage(body, "Please include at least one user");
+    return { statusCode: BAD_REQUEST };
+  }
+
+  const filteredUsers = removeDupleMembers(crew, usersInput);
+
+  const crewUpdated = await saveCrew(crew, filteredUsers);
+  if (!crewUpdated) {
+    await sendMessage(body, `The crew <b>${crewName}</b> failed to update`);
+    return { statusCode: INTERNAL_SERVER_ERROR };
+  }
+
+  const membersUpdated = crewUpdated?.members
+    ?.map((member) => member as User)
+    ?.map((member: User) => `@${member?.username}`)
+    ?.join(" | ");
+  await sendMessage(
+    body,
+    `The crew <b>${crewUpdated?.name}</b> has been updated successfully, members:\n\n[ ${membersUpdated} ]`
+  );
+  return { statusCode: OK };
+};
+
+export const crewsMembersAdd = async (
   event: APIGatewayEvent,
   context: Context,
   callback: Callback
