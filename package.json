@@ -11,7 +11,8 @@
     "local:crews": "sls invoke local -f crews -p mock_events/event_crews.json --stage dev",
     "local:crew": "sls invoke local -f crew -p mock_events/event_crew.json --stage dev",
     "local:crewsCreate": "sls invoke local -f crewsCreate -p mock_events/event_crews_create.json --stage dev",
-    "local:crewsMembersAdd": "sls invoke local -f crewsMembersAdd -p mock_events/event_crews_members_add.json --stage dev"
+    "local:crewsMembersAdd": "sls invoke local -f crewsMembersAdd -p mock_events/event_crews_members_add.json --stage dev",
+    "local:crewsMembersRemove": "sls invoke local -f crewsMembersRemove -p mock_events/event_crews_members_remove.json --stage dev"
   },
   "repository": {
     "type": "git",

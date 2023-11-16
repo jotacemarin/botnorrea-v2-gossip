@@ -1,11 +1,5 @@
 import { APIGatewayEvent, Callback, Context } from "aws-lambda";
-import {
-  OK,
-  BAD_REQUEST,
-  NOT_FOUND,
-  NOT_MODIFIED,
-  INTERNAL_SERVER_ERROR,
-} from "http-status";
+import { OK, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } from "http-status";
 import { Crew, FormattingOptionsTg, UpdateTg, User } from "../../lib/models";
 import { getTextCommand } from "../../lib/utils/telegramHelper";
 import { UserDao } from "../../lib/dao/userDao";
@@ -36,14 +30,14 @@ const getDataFromBody = (
   return { crewName: crewName?.toLowerCase(), usernames };
 };
 
-const getUsersId = async (usernames: Array<string>): Promise<Array<string>> => {
+const getUsersId = async (usernames: Array<string>): Promise<Array<User>> => {
   await UserDao.initInstance();
   const users = await UserDao.findByUsernames(usernames);
   if (!users || !users?.length) {
     return [];
   }
 
-  return users.map((user: User) => user?._id as string);
+  return users;
 };
 
 const getCrew = async (crewName: string) => {
@@ -53,23 +47,28 @@ const getCrew = async (crewName: string) => {
 
 const removeDupleMembers = (
   crew: Crew,
-  usersInput: Array<string>
-): Array<string> => {
-  const currentUsers = crew?.members
-    ?.map((member) => member as User)
-    ?.map((member) => String(member?._id));
-  const stringIdUsers = [...currentUsers, ...usersInput]
-    ?.filter((user) => Boolean(user))
-    ?.map((rawUser) => String(rawUser));
-  return [...new Set(stringIdUsers)];
+  usersInput: Array<User>
+): Array<User> => {
+  const mergedUsers = [...crew?.members, ...usersInput];
+  const usersOnlyStringId = mergedUsers?.map((user: User) => String(user?._id));
+  const withoutDuplesStringId = [...new Set(usersOnlyStringId)];
+
+  return withoutDuplesStringId?.map(
+    (mongoId: string) =>
+      mergedUsers?.find((user: User) => String(user?._id) === mongoId) as User
+  );
 };
 
 const saveCrew = async (
   crew: Crew,
-  members: Array<string>
+  members: Array<User>
 ): Promise<Crew | null> => {
-  await CrewDao.initInstance();
-  return CrewDao.save({ ...crew, members });
+  try {
+    await CrewDao.initInstance();
+    return CrewDao.save({ ...crew, members });
+  } catch (error) {
+    return null;
+  }
 };
 
 const execute = async (
@@ -90,7 +89,6 @@ const execute = async (
   }
 
   const filteredUsers = removeDupleMembers(crew, usersInput);
-
   const crewUpdated = await saveCrew(crew, filteredUsers);
   if (!crewUpdated) {
     await sendMessage(body, `The crew <b>${crewName}</b> failed to update`);
@@ -98,7 +96,6 @@ const execute = async (
   }
 
   const membersUpdated = crewUpdated?.members
-    ?.map((member) => member as User)
     ?.map((member: User) => `@${member?.username}`)
     ?.join(" | ");
   await sendMessage(

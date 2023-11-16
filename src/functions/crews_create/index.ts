@@ -1,5 +1,10 @@
 import { APIGatewayEvent, Callback, Context } from "aws-lambda";
-import { CREATED, BAD_REQUEST } from "http-status";
+import {
+  CREATED,
+  BAD_REQUEST,
+  NOT_IMPLEMENTED,
+  NOT_MODIFIED,
+} from "http-status";
 import { Crew, FormattingOptionsTg, UpdateTg, User } from "../../lib/models";
 import { BotnorreaService } from "../../lib/services/botnorrea";
 import { CrewDao } from "../../lib/dao/crewDao";
@@ -9,6 +14,26 @@ import { UserDao } from "../../lib/dao/userDao";
 const extractSelfUser = async (body: UpdateTg): Promise<User | null> => {
   await UserDao.initInstance();
   return UserDao.findByTelegramId(Number(body?.message?.from?.id));
+};
+
+const getUsersId = async (usernames: Array<string>): Promise<Array<User>> => {
+  await UserDao.initInstance();
+  const users = await UserDao.findByUsernames(usernames);
+  if (!users || !users?.length) {
+    return [];
+  }
+
+  return users;
+};
+
+const removeDupleMembers = (usersInput: Array<User>): Array<User> => {
+  const usersOnlyStringId = usersInput?.map((user: User) => String(user?._id));
+  const withoutDuplesStringId = [...new Set(usersOnlyStringId)];
+
+  return withoutDuplesStringId?.map(
+    (mongoId: string) =>
+      usersInput?.find((user: User) => String(user?._id) === mongoId) as User
+  );
 };
 
 const getDataFromBody = (
@@ -24,31 +49,9 @@ const getDataFromBody = (
   return { crewName: crewName?.toLowerCase(), usernames };
 };
 
-const getUsersId = async (usernames: Array<string>) => {
-  await UserDao.initInstance();
-  const users = await UserDao.findByUsernames(usernames);
-  if (!users || !users?.length) {
-    return [];
-  }
-
-  return users.map((user: User) => user?._id as string);
-};
-
-const getCrewCreate = async (body: UpdateTg): Promise<Crew | null> => {
-  const user = await extractSelfUser(body);
-  const { crewName, usernames } = getDataFromBody(body);
-
-  const usersInput = await getUsersId(usernames);
-  const stringIdUsers = [user?._id, ...usersInput]
-    ?.filter((user) => Boolean(user))
-    ?.map((rawUser) => String(rawUser));
-  const users = [...new Set(stringIdUsers)];
-
+const findCrewByName = async (crewName: string): Promise<Crew | null> => {
   await CrewDao.initInstance();
-  return CrewDao.save({
-    name: crewName,
-    members: users,
-  });
+  return CrewDao.findByName(crewName);
 };
 
 const sendMessage = async (body: UpdateTg, text: string): Promise<void> => {
@@ -62,29 +65,54 @@ const sendMessage = async (body: UpdateTg, text: string): Promise<void> => {
   return;
 };
 
-const buildMessage = async (body: UpdateTg, crew: Crew): Promise<void> => {
-  const usernames = crew?.members
-    ?.map((member) => member as User)
-    ?.map((member: User) => `@${member?.username}`)
-    .join(" | ");
+const saveCrew = async (
+  body: UpdateTg,
+  crewName: string,
+  usernames: Array<string>
+): Promise<Crew | null> => {
+  const user = await extractSelfUser(body);
+  if (!user) {
+    return null;
+  }
 
-  await sendMessage(
-    body,
-    `Crew <b>${crew?.name}</b> has been created, members:\n\n[ ${usernames} ]`
-  );
-  return;
+  const usersInput = await getUsersId(usernames);
+  const mergedUsers = removeDupleMembers([user, ...usersInput]);
+
+  try {
+    await CrewDao.initInstance();
+    return CrewDao.save({
+      name: crewName,
+      members: mergedUsers,
+    });
+  } catch (error) {
+    return null;
+  }
 };
+
+const buildUsernames = (crew: Crew): string =>
+  crew?.members?.map((member: User) => `@${member?.username}`).join(" | ");
 
 const execute = async (
   body: UpdateTg
 ): Promise<{ statusCode: number; body?: string }> => {
-  const crew = await getCrewCreate(body);
-  if (!crew) {
+  const { crewName, usernames } = getDataFromBody(body);
+  const existingCrew = await findCrewByName(crewName);
+  if (existingCrew) {
+    await sendMessage(body, `The crew ${crewName} is already exists`);
+    return { statusCode: NOT_MODIFIED };
+  }
+
+  const crewCreated = await saveCrew(body, crewName, usernames);
+  if (!crewCreated) {
     await sendMessage(body, "Crew could not be created");
     return { statusCode: BAD_REQUEST };
   }
 
-  await buildMessage(body, crew);
+  const usernamesFormatted = buildUsernames(crewCreated);
+  await sendMessage(
+    body,
+    `Crew <b>${crewCreated?.name}</b> has been created, members:\n\n[ ${usernamesFormatted} ]`
+  );
   return { statusCode: CREATED };
 };
 
