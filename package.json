@@ -1,32 +1,30 @@
 {
-  "name": "botnorrea-v2-crews",
+  "name": "botnorrea-v2-gossip",
   "version": "1.0.0",
-  "description": "Botnorrea v2 core: crews functions",
+  "description": "Botnorrea v2 core: gossip functions",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
     "dev:deploy": "sls deploy --stage dev --verbose",
     "dev:destroy": "sls remove --stage dev --verbose",
-    "local:crews": "sls invoke local -f crews -p mock_events/event_crews.json --stage dev",
-    "local:crew": "sls invoke local -f crew -p mock_events/event_crew.json --stage dev",
-    "local:crewsCreate": "sls invoke local -f crewsCreate -p mock_events/event_crews_create.json --stage dev",
-    "local:crewsMembersAdd": "sls invoke local -f crewsMembersAdd -p mock_events/event_crews_members_add.json --stage dev",
-    "local:crewsMembersRemove": "sls invoke local -f crewsMembersRemove -p mock_events/event_crews_members_remove.json --stage dev"
+    "local:gossipRegisterGroup": "sls invoke local -f gossipRegisterGroup -p mock_events/event_gossip_register_group.json --stage dev",
+    "local:gossip": "sls invoke local -f gossip -p mock_events/event_gossip.json --stage dev",
+    "local:gossipCallback": "sls invoke local -f gossip -p mock_events/event_gossip_callback.json --stage dev"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jotacemarin/botnorrea-v2-crews.git"
+    "url": "git+https://github.com/jotacemarin/botnorrea-v2-gossip.git"
   },
   "keywords": [
-    "botnorrea-v2-crews"
+    "botnorrea-v2-gossip"
   ],
   "author": "jotacemarin@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jotacemarin/botnorrea-v2-crews/issues"
+    "url": "https://github.com/jotacemarin/botnorrea-v2-gossip/issues"
   },
-  "homepage": "https://github.com/jotacemarin/botnorrea-v2-crews#readme",
+  "homepage": "https://github.com/jotacemarin/botnorrea-v2-gossip#readme",
   "jest": {
     "coveragePathIgnorePatterns": [
       "src/services/telegram"
@@ -43,7 +41,7 @@
   "dependencies": {
     "axios": "1.4.0",
     "http-status": "1.6.2",
-    "mongoose": "^8.0.0"
+    "mongoose": "8.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "7.22.10",

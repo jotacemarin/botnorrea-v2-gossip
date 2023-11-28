@@ -24,8 +24,5 @@ provider:
     MONGO_DATABASE: ${self:custom.secrets.provider.environment.MONGO_DATABASE}
 
 functions:
-  crews: ${file(./src/functions/crews/function.yml)}
-  crew: ${file(./src/functions/crew/function.yml)}
-  crewsCreate: ${file(./src/functions/crews_create/function.yml)}
-  crewsMembersAdd: ${file(./src/functions/crews_members_add/function.yml)}
-  crewsMembersRemove: ${file(./src/functions/crews_members_remove/function.yml)}
+  gossip: ${file(./src/functions/gossip/function.yml)}
+  gossipRegisterGroup: ${file(./src/functions/gossip_register_group/function.yml)}

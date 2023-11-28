@@ -8,7 +8,7 @@ interface AtedAt {
 
 export interface User {
   _id?: ID | string;
-  id: string;
+  id: number | string;
   username: string;
   firstname?: string;
   lastname?: string;
@@ -30,6 +30,22 @@ export interface Command {
   key: string;
   url: string;
   enabled: boolean;
+  createdAt?: AtedAt | string;
+  updatedAt?: AtedAt | string;
+}
+
+export interface GossipGroup {
+  _id?: ID | string;
+  id: number | string;
+  enabled: boolean;
+  createdAt?: AtedAt | string;
+  updatedAt?: AtedAt | string;
+}
+
+export interface GossipMessage {
+  _id?: ID | string;
+  user: User;
+  message: string;
   createdAt?: AtedAt | string;
   updatedAt?: AtedAt | string;
 }

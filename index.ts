@@ -1,5 +1,2 @@
-export { crews } from "./src/functions/crews";
-export { crew } from "./src/functions/crew";
-export { crewsCreate } from "./src/functions/crews_create";
-export { crewsMembersAdd } from "./src/functions/crews_members_add";
-export { crewsMembersRemove } from "./src/functions/crews_members_remove";
+export { gossip } from "./src/functions/gossip";
+export { gossipRegisterGroup } from "./src/functions/gossip_register_group";
