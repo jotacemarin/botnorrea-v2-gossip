@@ -1,5 +1,11 @@
 import { APIGatewayEvent, Callback, Context } from "aws-lambda";
-import { BAD_REQUEST, OK, NOT_FOUND, NO_CONTENT } from "http-status";
+import {
+  BAD_REQUEST,
+  OK,
+  NOT_FOUND,
+  NO_CONTENT,
+  INTERNAL_SERVER_ERROR,
+} from "http-status";
 import {
   ChatTypeTg,
   FormattingOptionsTg,
@@ -42,20 +48,6 @@ const replyCallback = async (body: UpdateTg, text: string): Promise<void> => {
     chat_id: body?.callback_query!.message?.chat?.id,
     text,
     reply_to_message_id: body?.callback_query!.message?.message_id,
-    parse_mode: FormattingOptionsTg?.HTML,
-  };
-
-  await BotnorreaService.sendMessage(params);
-  return;
-};
-
-const sendMessage = async (
-  chatId: number | string,
-  text: string
-): Promise<void> => {
-  const params: SendMessageParams = {
-    chat_id: chatId,
-    text,
     parse_mode: FormattingOptionsTg?.HTML,
   };
 
@@ -109,12 +101,17 @@ const getGroups = async (user: User) => {
   return chats?.data?.map((chat) => chat?.group);
 };
 
-const cleanMessageReplyMarkup = async (body: UpdateTg): Promise<void> => {
+const editMessage = async (body: UpdateTg, text: string): Promise<void> => {
   const {
     chat: { id: chatId },
     message_id: messageId,
   } = body?.callback_query!.message;
-  await BotnorreaService.cleanReplyMarkup(chatId, messageId);
+  await BotnorreaService.editMessage({
+    chat_id: chatId,
+    message_id: messageId,
+    text,
+    reply_markup: { inline_keyboard: [] },
+  });
 };
 
 const executeMessage = async (
@@ -141,10 +138,8 @@ const executeMessage = async (
     return { text: "Crews not found", statusCode: NOT_FOUND };
   }
 
-  const message = cleanGossipText(body);
-
   return {
-    text: `Preview gossip: ${message}\n\nPlease select chat to send the gossip:`,
+    text: `Please select chat to send the gossip:`,
     replyMarkup: {
       inline_keyboard: [
         ...groups.map((group) => [
@@ -180,10 +175,7 @@ const executeCallback = async (
     message: body?.callback_query!.message?.reply_to_message as MessageTg,
   });
 
-  await Promise.all([
-    cleanMessageReplyMarkup(body),
-    sendMessage(group.id, `Anonymous sends us: ${message}`),
-  ]);
+  await editMessage(body, `Gossip sent!`);
 
   const privateReply = buildPrivateReply(body, group?.id, message);
 
@@ -225,7 +217,11 @@ export const gossip = async (
   }
 
   const body = JSON.parse(event?.body);
-  const response = await execute(body);
 
-  return callback(null, response);
+  try {
+    const response = await execute(body);
+    return callback(null, response);
+  } catch (error) {
+    return callback(error, { statusCode: INTERNAL_SERVER_ERROR });
+  }
 };

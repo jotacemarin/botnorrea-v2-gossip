@@ -31,6 +31,18 @@ export interface SendMessageParams {
   reply_markup?: InlineKeyboardMarkup;
 }
 
+export interface EditMessageParams {
+  chat_id: number | string;
+  message_id: number | string;
+  text: string;
+  reply_markup?: InlineKeyboardMarkup;
+  message_thread_id?: number;
+  parse_mode?: FormattingOptionsTg;
+  entities?: Array<EntityTg>;
+  protect_content?: boolean;
+  reply_to_message_id?: number;
+}
+
 export interface SendPhotoParams {
   chat_id: number | string;
   photo: string;
@@ -94,12 +106,13 @@ export class BotnorreaService {
   public static sendMessage(
     params: SendMessageParams
   ): Promise<AxiosResponse<SendMessageResponse>> {
-    try {
-      return BotnorreaService.instance.post("/send-message", params);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return BotnorreaService.instance.post("/send-message", params);
+  }
+
+  public static editMessage(
+    params: EditMessageParams
+  ): Promise<AxiosResponse<SendMessageResponse>> {
+    return BotnorreaService.instance.post("/edit-message", params);
   }
 
   public static sendPhoto(
