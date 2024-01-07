@@ -8,6 +8,8 @@
     "coverage": "jest --coverage",
     "dev:deploy": "sls deploy --stage dev --verbose",
     "dev:destroy": "sls remove --stage dev --verbose",
+    "prod:deploy": "sls deploy --stage prod --verbose",
+    "prod:destroy": "sls remove --stage prod --verbose",
     "local:gossipRegisterGroup": "sls invoke local -f gossipRegisterGroup -p mock_events/event_gossip_register_group.json --stage dev",
     "local:gossip": "sls invoke local -f gossip -p mock_events/event_gossip.json --stage dev",
     "local:gossipCallback": "sls invoke local -f gossip -p mock_events/event_gossip_callback.json --stage dev"

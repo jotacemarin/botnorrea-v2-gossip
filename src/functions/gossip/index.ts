@@ -175,7 +175,13 @@ const executeCallback = async (
     message: body?.callback_query!.message?.reply_to_message as MessageTg,
   });
 
-  await editMessage(body, `Gossip sent!`);
+  await Promise.all([
+    BotnorreaService.sendMessage({
+      chat_id: group?.id,
+      text: `Anonymous: ${message}`,
+    }),
+    editMessage(body, `Gossip sent!`),
+  ]);
 
   const privateReply = buildPrivateReply(body, group?.id, message);
 
