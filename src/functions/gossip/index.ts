@@ -124,7 +124,7 @@ const executeMessage = async (
   if (body?.message?.chat?.type !== ChatTypeTg.PRIVATE) {
     return {
       statusCode: BAD_REQUEST,
-      text: "Cannot allowed in group chat",
+      text: "Is not allowed in group chat",
     };
   }
 
