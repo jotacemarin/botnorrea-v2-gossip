@@ -72,7 +72,7 @@ export interface MessageTg {
   date: number;
   text: string;
   caption: string;
-  reply_to_message: ReplyToMessageTg | MessageTg;
+  reply_to_message: ReplyToMessageTg;
   photo: Array<PhotoSizeTg>;
   entities?: Array<EntityTg>;
   caption_entities?: Array<EntityTg>;
