@@ -22,6 +22,8 @@ import { UserDao } from "../../lib/dao/userDao";
 import { GossipGroupDao } from "../../lib/dao/gossipGroupDao";
 import { MessageTg } from "../../lib/models/telegram";
 
+const SPOILER_PARAM = "-s";
+
 const replyMessage = async (
   body: UpdateTg,
   text: string,
@@ -55,9 +57,28 @@ const replyCallback = async (body: UpdateTg, text: string): Promise<void> => {
   return;
 };
 
-const cleanGossipText = (body: UpdateTg): string => {
+const cleanGossipText = (
+  body: UpdateTg
+): { message: string; spoiler: boolean } => {
   const command = getTextCommand(body);
-  return body?.message!.text?.replace(String(command), "")?.trim();
+  let text = "";
+  let spoiler = false;
+
+  if (body?.message?.text) {
+    text = body?.message?.text;
+  }
+
+  if (body?.message?.caption) {
+    text = body?.message?.caption;
+    spoiler = text?.split(" ")?.includes(SPOILER_PARAM);
+  }
+
+  const message = text
+    ?.replace(String(command), "")
+    ?.replace(SPOILER_PARAM, "")
+    ?.trim();
+
+  return { message, spoiler };
 };
 
 const getGroupFromCallback = (
@@ -170,18 +191,34 @@ const executeCallback = async (
     };
   }
 
-  const message = cleanGossipText({
+  const replyToMessage = body?.callback_query!.message?.reply_to_message;
+
+  const { message, spoiler } = cleanGossipText({
     update_id: body.update_id,
-    message: body?.callback_query!.message?.reply_to_message as MessageTg,
+    message: replyToMessage as MessageTg,
   });
 
-  await Promise.all([
-    BotnorreaService.sendMessage({
+  if (replyToMessage?.text) {
+    await BotnorreaService.sendMessage({
       chat_id: group?.id,
       text: `Anonymous: ${message}`,
-    }),
-    editMessage(body, `Gossip sent!`),
-  ]);
+    });
+  }
+
+  if (replyToMessage?.caption) {
+    const [bigPhoto] = replyToMessage?.photo?.sort(
+      (first, second) => first.file_size - second.file_size
+    );
+
+    await BotnorreaService.sendPhoto({
+      chat_id: group?.id,
+      photo: bigPhoto?.file_id,
+      caption: `Anonymous: ${message}`,
+      has_spoiler: spoiler,
+    });
+  }
+
+  await editMessage(body, `Gossip sent!`);
 
   const privateReply = buildPrivateReply(body, group?.id, message);
 

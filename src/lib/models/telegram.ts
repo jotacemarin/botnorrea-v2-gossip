@@ -40,8 +40,21 @@ export interface ReplyToMessageTg {
   message_id: number;
   from: UserTg;
   chat: ChatTg;
-  date: string;
+  date: number;
   text: string;
+  caption: string;
+  reply_to_message: ReplyToMessageTg | MessageTg;
+  photo: Array<PhotoSizeTg>;
+  entities?: Array<EntityTg>;
+  caption_entities?: Array<EntityTg>;
+  reply_markup?: {
+    inline_keyboard: Array<
+      Array<{
+        text: string;
+        callback_data: string;
+      }>
+    >;
+  };
 }
 
 export interface PhotoSizeTg {

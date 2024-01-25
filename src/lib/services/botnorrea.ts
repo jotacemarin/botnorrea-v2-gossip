@@ -53,6 +53,7 @@ export interface SendPhotoParams {
   allow_sending_without_reply?: boolean;
   protect_content?: boolean;
   reply_markup?: any;
+  has_spoiler?: boolean;
 }
 
 export interface GetChatsParams {
