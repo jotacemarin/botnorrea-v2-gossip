@@ -14,6 +14,14 @@ import { getTextCommand } from "../../lib/utils/telegramHelper";
 
 const SPOILER_PARAM = "-s";
 
+const wrapperSpoiler = (text: string, spoiler: boolean): string => {
+  if (spoiler) {
+    return `<tg-spoiler>${text}</tg-spoiler>`;
+  }
+
+  return text;
+};
+
 const cleanGossipText = (
   body: UpdateTg
 ): { text: string; spoiler: boolean } => {
@@ -27,15 +35,16 @@ const cleanGossipText = (
 
   if (body?.message?.caption) {
     result = body?.message?.caption;
-    spoiler = result?.split(" ")?.includes(SPOILER_PARAM);
   }
 
-  const message = result
+  spoiler = result?.split(" ")?.includes(SPOILER_PARAM);
+
+  const text = result
     ?.replace(String(command), "")
     ?.replace(SPOILER_PARAM, "")
     ?.trim();
 
-  return { text: message, spoiler };
+  return { text: wrapperSpoiler(text, spoiler), spoiler };
 };
 
 const replyMessage = async (
@@ -47,7 +56,7 @@ const replyMessage = async (
     chat_id: body?.message!.chat?.id,
     text,
     reply_to_message_id: body?.message!.message_id,
-    parse_mode: FormattingOptionsTg?.HTML,
+    parse_mode: FormattingOptionsTg.HTML,
     reply_markup: replyMarkup,
   };
 
@@ -63,7 +72,7 @@ const replyCallback = async (body: UpdateTg, text: string): Promise<void> => {
     chat_id: body?.callback_query!.message?.chat?.id,
     text,
     reply_to_message_id: body?.callback_query!.message?.message_id,
-    parse_mode: FormattingOptionsTg?.HTML,
+    parse_mode: FormattingOptionsTg.HTML,
   };
 
   await BotnorreaService.sendMessage(params);

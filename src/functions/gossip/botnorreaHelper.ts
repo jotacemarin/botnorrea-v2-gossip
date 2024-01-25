@@ -1,5 +1,6 @@
 import { GossipGroup, User } from "../../lib/models";
 import {
+  FormattingOptionsTg,
   MessageTg,
   PhotoSizeTg,
   ReplyToMessageTg,
@@ -13,6 +14,7 @@ const sendTextMessage = async (
   await BotnorreaService.sendMessage({
     chat_id: group?.id,
     text: `Anonymous: ${text}`,
+    parse_mode: FormattingOptionsTg.HTML,
   });
 };
 
@@ -27,6 +29,7 @@ const sendPhoto = async (
     photo: photo?.file_id,
     caption: `Anonymous: ${text}`,
     has_spoiler: spoiler,
+    parse_mode: FormattingOptionsTg.HTML
   });
 };
 

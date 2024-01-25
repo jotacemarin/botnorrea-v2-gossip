@@ -14,7 +14,7 @@ const sendMessage = async (body: UpdateTg, text: string): Promise<void> => {
     chat_id: body.message!.chat.id,
     text,
     reply_to_message_id: body?.message?.message_id,
-    parse_mode: FormattingOptionsTg?.HTML,
+    parse_mode: FormattingOptionsTg.HTML,
   });
   return;
 };
