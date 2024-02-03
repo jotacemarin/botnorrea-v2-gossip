@@ -1,11 +1,11 @@
-import { GossipGroup, User } from "../../lib/models";
 import {
   FormattingOptionsTg,
+  GossipGroup,
   MessageTg,
   PhotoSizeTg,
-  ReplyToMessageTg,
-} from "../../lib/models/telegram";
-import { BotnorreaService } from "../../lib/services/botnorrea";
+  User,
+} from "../../lib/models";
+import { BotnorreaService } from "../../lib/services";
 
 const sendTextMessage = async (
   group: GossipGroup | { id: string | number },
@@ -29,12 +29,12 @@ const sendPhoto = async (
     photo: photo?.file_id,
     caption: `Anonymous: ${text}`,
     has_spoiler: spoiler,
-    parse_mode: FormattingOptionsTg.HTML
+    parse_mode: FormattingOptionsTg.HTML,
   });
 };
 
 export const sendMessage = async (
-  message: MessageTg | ReplyToMessageTg,
+  message: MessageTg,
   group: GossipGroup | { id: string | number },
   text: string,
   spoiler: boolean

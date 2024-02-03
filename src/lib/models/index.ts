@@ -1,10 +1,13 @@
-export { User, Crew, Command, GossipGroup, GossipMessage } from "./botnorrea";
+export { Command, Crew, GossipGroup, GossipMessage, User } from "./botnorrea";
 export {
   ChatTg,
   ChatTypeTg,
   EntityTg,
   EntityTypeTg,
+  FormattingOptionsTg,
+  MessageTg,
+  PhotoSizeTg,
+  ReplyMarkupTg,
   UpdateTg,
   UserTg,
-  FormattingOptionsTg,
 } from "./telegram";

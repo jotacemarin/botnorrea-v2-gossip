@@ -1,6 +1,6 @@
 import { Model, Schema, model } from "mongoose";
-import { User } from "../models";
 import { MongodbService } from "../services/mongodb";
+import { User } from "../models";
 
 export class UserDao {
   private static schemaName: string = "user";

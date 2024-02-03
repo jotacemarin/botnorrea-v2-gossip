@@ -1,6 +1,6 @@
 import { Model, Schema, model } from "mongoose";
-import { GossipGroup } from "../models";
 import { MongodbService } from "../services/mongodb";
+import { GossipGroup } from "../models";
 
 export class GossipGroupDao {
   private static schemaName: string = "gossip_group";

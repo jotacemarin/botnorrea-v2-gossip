@@ -1,6 +1,6 @@
 import { Model, Schema, SchemaTypes, model } from "mongoose";
-import { GossipMessage } from "../models";
 import { MongodbService } from "../services/mongodb";
+import { GossipMessage } from "../models";
 
 const { ObjectId } = SchemaTypes;
 

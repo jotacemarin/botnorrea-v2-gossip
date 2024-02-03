@@ -1,6 +1,6 @@
 import { Model, Schema, model } from "mongoose";
-import { Command } from "../models";
 import { MongodbService } from "../services/mongodb";
+import { Command } from "../models";
 
 export class CommandDao {
   private static schemaName: string = "command";

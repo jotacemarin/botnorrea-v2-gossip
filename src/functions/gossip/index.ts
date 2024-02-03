@@ -6,11 +6,10 @@ import {
   InlineKeyboardMarkup,
   SendMessageParams,
 } from "../../lib/services/botnorrea";
-import { UserDao } from "../../lib/dao/userDao";
-import { GossipGroupDao } from "../../lib/dao/gossipGroupDao";
+import { UserDao, GossipGroupDao } from "../../lib/dao";
+import { getTextCommand } from "../../lib/utils/telegramHelper";
 import executeMessage from "./message";
 import executeCallback from "./callback";
-import { getTextCommand } from "../../lib/utils/telegramHelper";
 
 const SPOILER_PARAM = "-s";
 

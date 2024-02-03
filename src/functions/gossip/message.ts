@@ -1,8 +1,7 @@
 import { BAD_REQUEST, NOT_FOUND, OK } from "http-status";
 import { ChatTypeTg, UpdateTg, User } from "../../lib/models";
-import { InlineKeyboardMarkup } from "../../lib/services/botnorrea";
-import { GossipGroupDao } from "../../lib/dao/gossipGroupDao";
-import { UserDao } from "../../lib/dao/userDao";
+import { InlineKeyboardMarkup } from "../../lib/services";
+import { GossipGroupDao, UserDao } from "../../lib/dao";
 import { getChats, sendMessage } from "./botnorreaHelper";
 
 const getUser = async (body: UpdateTg): Promise<User | null> => {

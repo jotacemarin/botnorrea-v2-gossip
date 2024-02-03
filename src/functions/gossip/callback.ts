@@ -1,8 +1,7 @@
 import { NOT_FOUND, OK } from "http-status";
-import { GossipGroupDao } from "../../lib/dao/gossipGroupDao";
+import { GossipGroupDao } from "../../lib/dao";
 import { UpdateTg } from "../../lib/models";
-import { BotnorreaService } from "../../lib/services/botnorrea";
-import { MessageTg } from "../../lib/models/telegram";
+import { BotnorreaService } from "../../lib/services";
 import { sendMessage } from "./botnorreaHelper";
 
 const getGroupFromCallback = (

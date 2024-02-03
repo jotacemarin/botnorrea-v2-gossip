@@ -1,6 +1,6 @@
 import { Model, Schema, SchemaTypes, model } from "mongoose";
-import { Crew } from "../models";
 import { MongodbService } from "../services/mongodb";
+import { Crew } from "../models";
 import { UserDao } from "./userDao";
 
 const { ObjectId } = SchemaTypes;

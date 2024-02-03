@@ -6,8 +6,8 @@ import {
   GossipGroup,
   UpdateTg,
 } from "../../lib/models";
-import { GossipGroupDao } from "../../lib/dao/gossipGroupDao";
-import { BotnorreaService } from "../../lib/services/botnorrea";
+import { GossipGroupDao } from "../../lib/dao";
+import { BotnorreaService } from "../../lib/services";
 
 const sendMessage = async (body: UpdateTg, text: string): Promise<void> => {
   await BotnorreaService.sendMessage({
