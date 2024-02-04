@@ -10,4 +10,5 @@ export {
   ReplyMarkupTg,
   UpdateTg,
   UserTg,
+  VideoTg,
 } from "./telegram";

@@ -13,7 +13,8 @@
     "local:gossipRegisterGroup": "sls invoke local -f gossipRegisterGroup -p mock_events/event_gossip_register_group.json --stage dev",
     "local:gossip": "sls invoke local -f gossip -p mock_events/event_gossip.json --stage dev",
     "local:gossipCallback": "sls invoke local -f gossip -p mock_events/event_gossip_callback.json --stage dev",
-    "local:gossipCallbackImage": "sls invoke local -f gossip -p mock_events/event_gossip_callback_with_image.json --stage dev"
+    "local:gossipCallbackImage": "sls invoke local -f gossip -p mock_events/event_gossip_callback_with_image.json --stage dev",
+    "local:gossipCallbackVideo": "sls invoke local -f gossip -p mock_events/event_gossip_callback_with_video.json --stage dev"
   },
   "repository": {
     "type": "git",

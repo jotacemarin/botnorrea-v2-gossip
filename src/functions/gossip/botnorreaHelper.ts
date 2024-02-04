@@ -4,6 +4,7 @@ import {
   MessageTg,
   PhotoSizeTg,
   User,
+  VideoTg,
 } from "../../lib/models";
 import { BotnorreaService } from "../../lib/services";
 
@@ -33,6 +34,21 @@ const sendPhoto = async (
   });
 };
 
+const sendVideo = async (
+  group: GossipGroup | { id: string | number },
+  video: VideoTg,
+  text: string,
+  spoiler: boolean
+) => {
+  await BotnorreaService.sendVideo({
+    chat_id: group?.id,
+    video: video?.file_id,
+    caption: `Anonymous: ${text}`,
+    has_spoiler: spoiler,
+    parse_mode: FormattingOptionsTg.HTML,
+  });
+};
+
 export const sendMessage = async (
   message: MessageTg,
   group: GossipGroup | { id: string | number },
@@ -43,12 +59,16 @@ export const sendMessage = async (
     await sendTextMessage(group, text);
   }
 
-  if (message?.caption) {
+  if (message?.photo) {
     const [bigPhoto] = message?.photo?.sort(
       (first, second) => first.file_size - second.file_size
     );
 
     await sendPhoto(group, bigPhoto, text, spoiler);
+  }
+
+  if (message?.video) {
+    await sendVideo(group, message?.video, text, spoiler);
   }
 };
 
