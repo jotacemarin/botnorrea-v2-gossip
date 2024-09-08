@@ -69,7 +69,7 @@ const executeCallback = async (
     message,
   });
 
-  await Promise.all([
+  await Promise.allSettled([
     sendMessage(message, group, text, spoiler),
     editMessage(body, `Gossip sent!`),
   ]);
