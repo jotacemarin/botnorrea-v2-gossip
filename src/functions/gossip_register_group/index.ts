@@ -37,7 +37,7 @@ const execute = async (body: UpdateTg): Promise<{ statusCode: number }> => {
 
   const gossipGroup = await saveGroup(body);
   if (!gossipGroup) {
-    await sendMessage(body, "something is going wrong!");
+    await sendMessage(body, "Something is going wrong!");
     return { statusCode: INTERNAL_SERVER_ERROR };
   }
 
