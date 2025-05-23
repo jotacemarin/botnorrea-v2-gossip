@@ -78,6 +78,12 @@ export interface GetChatsParams {
   chats: Array<number | string>;
 }
 
+export interface DeleteMessageParams {
+  chat_id: number | string;
+  message_id?: number | string;
+  message_ids?: Array<number | string>;
+}
+
 interface SendMessageResponse {
   message_id: number;
   message_thread_id: number;
@@ -106,6 +112,11 @@ interface CleanReplyMarkupResponse {
     edit_date: number;
     text: string;
   };
+}
+
+interface DeleteMessageResponse {
+  ok: boolean;
+  result: boolean;
 }
 
 export class BotnorreaService {
@@ -160,5 +171,11 @@ export class BotnorreaService {
       chatId,
       messageId,
     });
+  }
+
+  public static deleteMessage(
+    params: DeleteMessageParams
+  ): Promise<AxiosResponse<DeleteMessageResponse>> {
+    return BotnorreaService.instance.post("/delete-message", params);
   }
 }

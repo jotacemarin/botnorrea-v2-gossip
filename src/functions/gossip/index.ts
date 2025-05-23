@@ -11,22 +11,11 @@ import { getTextCommand } from "../../lib/utils/telegramHelper";
 import executeMessage from "./message";
 import executeCallback from "./callback";
 
-const SPOILER_PARAM = "-s";
-
-const wrapperSpoiler = (text: string, spoiler: boolean): string => {
-  if (spoiler) {
-    return `<tg-spoiler>${text}</tg-spoiler>`;
-  }
-
-  return text;
-};
-
 const cleanGossipText = (
   body: UpdateTg
 ): { text: string; spoiler: boolean } => {
   const command = getTextCommand(body);
   let result = "";
-  let spoiler = false;
 
   if (body?.message?.text) {
     result = body?.message?.text;
@@ -36,14 +25,9 @@ const cleanGossipText = (
     result = body?.message?.caption;
   }
 
-  spoiler = result?.split(" ")?.includes(SPOILER_PARAM);
+  const text = result?.replace(String(command), "")?.trim();
 
-  const text = result
-    ?.replace(String(command), "")
-    ?.replace(SPOILER_PARAM, "")
-    ?.trim();
-
-  return { text: wrapperSpoiler(text, spoiler), spoiler };
+  return { text: `<tg-spoiler>${text}</tg-spoiler>`, spoiler: true };
 };
 
 const replyMessage = async (
@@ -94,7 +78,11 @@ const execute = async (body: UpdateTg): Promise<{ statusCode: number }> => {
 
   if (body?.callback_query) {
     const { statusCode, text } = await executeCallback(body, cleanGossipText);
-    await replyCallback(body, text);
+
+    if (text) {
+      await replyCallback(body, text);
+    }
+
     return { statusCode };
   }
 
