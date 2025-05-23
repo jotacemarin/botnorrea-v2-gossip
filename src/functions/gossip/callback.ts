@@ -1,8 +1,7 @@
 import { NOT_FOUND, OK } from "http-status";
 import { GossipGroupDao } from "../../lib/dao";
-import { FormattingOptionsTg, UpdateTg } from "../../lib/models";
-import { BotnorreaService } from "../../lib/services";
-import { sendMessage } from "./botnorreaHelper";
+import { UpdateTg } from "../../lib/models";
+import { deleteMessage, editMessage, sendMessage } from "./botnorreaHelper";
 
 const getGroupFromCallback = (
   body: UpdateTg,
@@ -16,33 +15,6 @@ const getGroupFromCallback = (
       ?.text ?? "";
 
   return groupName ? ` to: <b>${groupName}</b>!` : ``;
-};
-
-const editMessage = async (body: UpdateTg, text: string): Promise<void> => {
-  const {
-    chat: { id: chatId },
-    message_id: messageId,
-    from,
-  } = body?.callback_query!.message;
-  if (from?.is_bot) {
-    await BotnorreaService.editMessage({
-      chat_id: chatId,
-      message_id: messageId,
-      text,
-      reply_markup: { inline_keyboard: [] },
-      parse_mode: FormattingOptionsTg.HTML,
-    });
-  }
-};
-
-const deleteMessage = async (
-  chatId: string | number,
-  messageId: string | number
-): Promise<void> => {
-  await BotnorreaService.deleteMessage({
-    chat_id: chatId,
-    message_id: messageId,
-  });
 };
 
 const executeCallback = async (

@@ -2,7 +2,7 @@ import { BAD_REQUEST, NOT_FOUND, OK } from "http-status";
 import { ChatTypeTg, UpdateTg, User } from "../../lib/models";
 import { InlineKeyboardMarkup } from "../../lib/services";
 import { GossipGroupDao, UserDao } from "../../lib/dao";
-import { getChats, sendMessage } from "./botnorreaHelper";
+import { deleteMessage, getChats, sendMessage } from "./botnorreaHelper";
 
 const getUser = async (body: UpdateTg): Promise<User | null> => {
   return UserDao.findByTelegramId(Number(body?.message?.from?.id));
@@ -44,12 +44,15 @@ const executeMessage = async (
 
   if (groups.length === 1) {
     const [group] = groups;
-    const { text, spoiler } = cleanGossipText(body);
+    const { text } = cleanGossipText(body);
 
-    await sendMessage(body?.message, group, text, spoiler);
+    await Promise.allSettled([
+      sendMessage(body?.message, group, text, true),
+      deleteMessage(body?.message?.chat?.id, body?.message?.message_id),
+    ]);
 
     return {
-      text: `A gossip was sent to: <b>${group?.title}</b>`,
+      text: `Gossip sent to: <b>${group?.title}</b>`,
       statusCode: OK,
     };
   }

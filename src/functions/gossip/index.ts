@@ -10,6 +10,7 @@ import { UserDao, GossipGroupDao } from "../../lib/dao";
 import { getTextCommand } from "../../lib/utils/telegramHelper";
 import executeMessage from "./message";
 import executeCallback from "./callback";
+import { sendMessage } from "./botnorreaHelper";
 
 const cleanGossipText = (
   body: UpdateTg
@@ -35,19 +36,20 @@ const replyMessage = async (
   text: string,
   replyMarkup?: InlineKeyboardMarkup
 ): Promise<void> => {
-  const params: SendMessageParams = {
-    chat_id: body?.message!.chat?.id,
-    text,
-    reply_to_message_id: body?.message!.message_id,
-    parse_mode: FormattingOptionsTg.HTML,
-    reply_markup: replyMarkup,
-  };
-
   if (replyMarkup) {
-    params.reply_markup = replyMarkup;
+    const params: SendMessageParams = {
+      chat_id: body?.message!.chat?.id,
+      text,
+      reply_to_message_id: body?.message!.message_id,
+      parse_mode: FormattingOptionsTg.HTML,
+      reply_markup: replyMarkup,
+    };
+    await BotnorreaService.sendMessage(params);
   }
 
-  await BotnorreaService.sendMessage(params);
+  if (!replyMarkup) {
+    await sendMessage({ text }, { id: body?.message!.chat?.id }, text, true);
+  }
 };
 
 const replyCallback = async (body: UpdateTg, text: string): Promise<void> => {
