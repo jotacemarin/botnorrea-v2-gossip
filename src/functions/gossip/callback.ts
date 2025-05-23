@@ -1,6 +1,6 @@
 import { NOT_FOUND, OK } from "http-status";
 import { GossipGroupDao } from "../../lib/dao";
-import { UpdateTg } from "../../lib/models";
+import { FormattingOptionsTg, UpdateTg } from "../../lib/models";
 import { BotnorreaService } from "../../lib/services";
 import { sendMessage } from "./botnorreaHelper";
 
@@ -15,7 +15,7 @@ const getGroupFromCallback = (
     body.callback_query!.message?.reply_markup?.inline_keyboard?.[0]?.find(cb)
       ?.text ?? "";
 
-  return groupName ? `to: <b>${groupName}</b>` : ``;
+  return groupName ? ` to: <b>${groupName}</b>!` : ``;
 };
 
 const editMessage = async (body: UpdateTg, text: string): Promise<void> => {
@@ -30,6 +30,7 @@ const editMessage = async (body: UpdateTg, text: string): Promise<void> => {
       message_id: messageId,
       text,
       reply_markup: { inline_keyboard: [] },
+      parse_mode: FormattingOptionsTg.HTML,
     });
   }
 };
